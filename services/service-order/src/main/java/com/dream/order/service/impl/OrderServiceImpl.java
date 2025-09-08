@@ -4,12 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.dream.order.bean.Order;
+import com.dream.order.feign.ProductFeignClient;
 import com.dream.order.service.OrderService;
 import com.dream.product.bean.Product;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -27,10 +29,21 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired  //一定导入 spring-cloud-starter-loadbalancer
+    LoadBalancerClient loadBalancerClient;
+
+    @Autowired
+    ProductFeignClient productFeignClient;
+
+
     @Override
     public Order createOrder(Long productId, Long userId) {
-        Product product = getProductFromRemoteWithLoadBalanceAnnotation(productId); //getProductFromRemoteWithLoadBalance
+//        Product product = getProductFromRemoteWithLoadBalanceAnnotation(productId); //getProductFromRemoteWithLoadBalance
 //        Product product = getProductFromRemote(productId); //getProductFromRemoteWithLoadBalance
+
+        //使用Feign完成远程调用
+        Product product = productFeignClient.getProductById(productId);
+
         Order order = new Order();
         order.setId(1L);
         //TODO 总金额
