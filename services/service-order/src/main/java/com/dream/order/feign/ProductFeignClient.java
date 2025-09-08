@@ -1,5 +1,6 @@
 package com.dream.order.feign;
 
+import com.dream.order.feign.fallback.ProductFeignClientFallback;
 import com.dream.product.bean.Product;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
  * @Date 2025-09-04 17:06
  **/
 
-@FeignClient(value = "service-product")    //feign客户端
+@FeignClient(value = "service-product",fallback = ProductFeignClientFallback.class)    //feign客户端
 public interface ProductFeignClient {
 
     //mvc注解的两套使用罗罗

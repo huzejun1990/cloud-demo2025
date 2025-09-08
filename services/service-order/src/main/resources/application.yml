@@ -3,6 +3,7 @@ server:
 spring:
   profiles:
     active: prod
+    include: feign
   application:
     name: service-order
   cloud:
@@ -15,10 +16,11 @@ spring:
 
 
 
-#  config:
-#    import:
-#      - nacos:common.properties?group=order
-#      - nacos:database.properties?group=order
+logging:
+  level:
+    com.dream.order.feign: debug
+
+
 ---
 spring:
   config:
