@@ -3,6 +3,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.dream.order.bean.Order;
 import com.dream.order.feign.ProductFeignClient;
 import com.dream.order.service.OrderService;
@@ -36,6 +37,7 @@ public class OrderServiceImpl implements OrderService {
     ProductFeignClient productFeignClient;
 
 
+    @SentinelResource(value = "createOrder")
     @Override
     public Order createOrder(Long productId, Long userId) {
 //        Product product = getProductFromRemoteWithLoadBalanceAnnotation(productId); //getProductFromRemoteWithLoadBalance
