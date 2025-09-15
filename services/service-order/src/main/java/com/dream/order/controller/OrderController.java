@@ -1,5 +1,7 @@
 package com.dream.order.controller;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.dream.order.bean.Order;
 import com.dream.order.properties.OrderProperties;
 import com.dream.order.service.OrderService;
@@ -56,5 +58,35 @@ public class OrderController {
 
         Order order = orderService.createOrder(productId, userId);
         return order;
+    }
+
+    @GetMapping("/seckill")
+    @SentinelResource(value = "seckill-order",fallback = "seckillFallback")
+    public Order seckill(@RequestParam(value = "userId",required = false) Long userId,
+                         @RequestParam(value = "productId",defaultValue = "1000") Long productId) {
+
+        Order order = orderService.createOrder(productId, userId);
+        order.setId(Long.MAX_VALUE);
+        return order;
+    }
+
+    public Order seckillFallback(Long productId, Long userId, Throwable exception) {
+        System.out.println("seckillFallback...");
+        Order order = new Order();
+        order.setId(productId);
+        order.setUserId(userId);
+        order.setAddress("异常信息： "+exception.getClass());
+        return order;
+    }
+
+    @GetMapping("/writeDb")
+    public String writeDb() {
+        return "writeDb success....";
+    }
+
+    @GetMapping("/readDb")
+    public String readDb() {
+        log.info("readDb...");
+        return "readDb success....";
     }
 }

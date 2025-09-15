@@ -1,9 +1,8 @@
 package com.dream.order.service.impl;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
+import com.alibaba.csp.sentinel.SphU;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.dream.order.bean.Order;
 import com.dream.order.feign.ProductFeignClient;
 import com.dream.order.service.OrderService;
@@ -15,6 +14,10 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Author huzejun
@@ -37,7 +40,7 @@ public class OrderServiceImpl implements OrderService {
     ProductFeignClient productFeignClient;
 
 
-    @SentinelResource(value = "createOrder")
+    @SentinelResource(value = "createOrder",blockHandler = "createOrderFallback")
     @Override
     public Order createOrder(Long productId, Long userId) {
 //        Product product = getProductFromRemoteWithLoadBalanceAnnotation(productId); //getProductFromRemoteWithLoadBalance
@@ -48,8 +51,8 @@ public class OrderServiceImpl implements OrderService {
 
         Order order = new Order();
         order.setId(1L);
+
         //TODO 总金额
-        ;
         order.setTotalAmount(product.getPrice().multiply(new BigDecimal(product.getNum())));
         order.setUserId(userId);
         order.setNickName("zhangsan");
@@ -57,7 +60,26 @@ public class OrderServiceImpl implements OrderService {
         //TODO 远程查询商品列表
         order.setProductList(Arrays.asList(product));
 
+//        try {
+//            SphU.entry("hahah");
+//
+//        } catch (BlockException e) {
+//            //编码处理
+//        }
         return order;
+    }
+
+    // 兜底回调
+    public Order createOrderFallback(Long productId, Long userId, BlockException e) {
+        Order order = new Order();
+        order.setId(0L);
+        order.setTotalAmount(new BigDecimal("0"));
+        order.setUserId(userId);
+        order.setNickName("未知用户");
+        order.setAddress("异常信息："+e.getClass());
+
+        return order;
+
     }
 
     //进阶3：基于注解的负载均衡
