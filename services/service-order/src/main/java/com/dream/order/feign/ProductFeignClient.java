@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  **/
 
 @FeignClient(value = "service-product",fallback = ProductFeignClientFallback.class)    //feign客户端
+//@FeignClient(value = "gateway",fallback = ProductFeignClientFallback.class)    //feign客户端
 public interface ProductFeignClient {
 
     //mvc注解的两套使用罗罗
