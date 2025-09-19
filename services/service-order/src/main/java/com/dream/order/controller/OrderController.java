@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @Author huzejun
  * @Date 2025-08-26 12:11
  **/
-@RequestMapping("/api/order")
+//@RequestMapping("/api/order")
 @Slf4j
 //@RefreshScope //自动刷新
 @RestController
