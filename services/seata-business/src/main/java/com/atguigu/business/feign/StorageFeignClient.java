@@ -12,7 +12,7 @@ public interface StorageFeignClient {
      * 扣减库存
      * @param commodityCode
      * @param count
-     * @return
+     * @return  //直接拿的state-storage controller里面的方法
      */
     @GetMapping("/deduct")
     String deduct(@RequestParam("commodityCode") String commodityCode,

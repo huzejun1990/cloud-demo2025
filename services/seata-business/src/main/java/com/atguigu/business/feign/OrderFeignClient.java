@@ -14,7 +14,7 @@ public interface OrderFeignClient {
      * @param userId
      * @param commodityCode
      * @param orderCount
-     * @return
+     * @return 直接使用的是seata-order中controller中的方法
      */
     @GetMapping("/create")
     String create(@RequestParam("userId") String userId,
